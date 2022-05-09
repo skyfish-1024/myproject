@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"sync"
 	"time"
 )
 
@@ -46,10 +47,14 @@ func SaveTopic(filePath string, topic Topic) error {
 }
 
 func SavePost(filePath string, post Post) error {
+	var wg sync.RWMutex
 	file, err := os.OpenFile(filePath+"post", os.O_WRONLY|os.O_APPEND, 0666)
 	if err != nil {
 		fmt.Println("文件打开失败", err)
 	}
+	wg.Lock()
+	PostIndexMap[post.TopicId] = append(PostIndexMap[post.TopicId], &post)
+	wg.Unlock()
 	//序列化post
 	buf, err := json.Marshal(post)
 	if err != nil {
@@ -59,6 +64,7 @@ func SavePost(filePath string, post Post) error {
 	defer file.Close()
 	//写入文件时，使用带缓存的 *Writer
 	write := bufio.NewWriter(file)
+	write.WriteString("\n")
 	write.Write(buf)
 	//Flush将缓存的文件真正写入到文件中
 	write.Flush()

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"myproject/controller"
 	"myproject/repository"
@@ -9,11 +10,12 @@ import (
 
 func main() {
 	if err := Init("./data/"); err != nil {
+		fmt.Println(err)
 		os.Exit(-1)
 	}
 	//insertdata()
 	r := gin.Default()
-	r.GET("/:id", func(c *gin.Context) {
+	r.GET("/community/page/get/:id", func(c *gin.Context) {
 		topicId := c.Param("id")
 		data := controller.QueryPageInfo(topicId)
 		c.JSON(200, data)

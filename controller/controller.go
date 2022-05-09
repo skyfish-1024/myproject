@@ -29,7 +29,6 @@ func QueryPageInfo(topicIdstr string) *PageData {
 	return &PageData{0, "success", pageInfo}
 }
 func PublishPost(topicIdstr string, content string) *PageData {
-	f = new(service.QueryPageInfoFlow)
 	topicId, err := strconv.ParseInt(topicIdstr, 10, 64)
 	if err != nil {
 		return &PageData{-1, "failed", nil}
